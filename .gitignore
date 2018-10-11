@@ -103,5 +103,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# etc
+# Project specific
 etc/
+ml_belt/plot.py
+
+# IDEs / Text Editors
+.idea
