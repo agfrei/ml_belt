@@ -10,7 +10,7 @@ class Prep(object):
 
     Attributes:
         data (pandas DataFrame): dataframe with all transformations
-        
+
     """
 
     def __init__(self, df: pd.DataFrame):
@@ -213,31 +213,6 @@ class Prep(object):
         for column in columns:
             self.data[column] = self.data[column].apply(
                 lambda x: time.mktime(x.timetuple()))
-        return self
-
-    # TODO: Verificar o que fazer nesse caso
-    # se não alterar o dataset quebra o encadeamento
-    # se alterarcolocar na descrição que não altera o dataset
-    def filter_and_group(self, filter_column, filter_data,
-                         group_column, use_filtered = True):
-        """Summary
-
-        Args:
-            filter_column (TYPE): Description
-            filter_data (TYPE): Description
-            group_column (TYPE): Description
-            use_filtered (bool): If True, a copy of the actual self.data will be made into a self.filtered
-
-        Returns:
-            pd.DataFrame: Description
-        """
-        if use_filtered:
-            self.filtered = self.data.copy()
-        else:
-            self.filtered = self.data
-        
-        self.filtered = self.data[self.data[filter_column] == filter_data]
-        print(self.filtered[group_column].value_counts())
         return self
 
 

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='ml_belt',
-    version='0.0.1',
+    version='0.0.3',
     description='The machine learning utility belt',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -14,12 +14,11 @@ setuptools.setup(
     author_email='agf.adriano@gmail.com',
     packages=setuptools.find_packages(),
     license='MIT',
-    classifiers=(
+    classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-    ),
-    zip_safe=False
-)
+    ],
+    zip_safe=False)
 
 # packages=['ds-belt'],
