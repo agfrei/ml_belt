@@ -3,10 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ml_belt's documentation!
+Welcome to ML Belt's documentation!
 ===================================
 
-The machine learning and data science utility belt
+The machine learning and data science utility belt.
 
 
 .. toctree::

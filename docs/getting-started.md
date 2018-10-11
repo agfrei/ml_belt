@@ -3,7 +3,7 @@ Getting started
 
 ## Installation
 
-You can install ml_belt using pip:
+You can install **ML Belt** using pip:
 
 ```
 pip install ml_belt
@@ -13,11 +13,11 @@ pip install ml_belt
 
 All you need to do is import [`Prep`](prep.html) class, create a new object passing a pandas DataFrame, so you can chain some steps of pre-processing that will be applied over the result of antecessor.
 
-At the end your modified DataFrame will be in `df` attribute.
+At the end your modified DataFrame will be in `data` attribute.
 
 
 ```python
-from ml_lib.prep import Prep
+from ml_belt.prep import Prep
 import pandas as pd
 
 def custom_fn(df):
@@ -36,5 +36,6 @@ prep_df = Prep(pd.read_csv('data.csv')) \
 
 # Now you have a modified df 
 # with all steps above
-df = prep_df.df
+df = prep_df.data
+df.to_csv('data_prep.csv')
 ```
