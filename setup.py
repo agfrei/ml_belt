@@ -9,7 +9,7 @@ setup(
     description='The machine learning utility belt',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://adrianogfreitas.github.io/ml_belt/',
+    url='https://ml-belt.readthedocs.io',
     author='Adriano Freitas',
     author_email='agf.adriano@gmail.com',
     packages=find_packages(),
