@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='ml_belt',
-    version='0.1',
+    version='0.1.2',
     description='The machine learning utility belt',
     long_description=long_description,
     long_description_content_type="text/markdown",

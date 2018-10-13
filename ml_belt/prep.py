@@ -21,31 +21,19 @@ class Prep(object):
             Al tasks are performed on a copy of this DataFrame
 
         """
-        self.data = df.copy()
+        self._data = df.copy()
 
-    # TODO: organizar a exibição / docstring
-    def info(self):
-        """Summary
-        """
-        # Configura para exibir a quantidade de nulls em um dataset grande
-        # utilizando a função .info())
-        print(self.data.set_option('max_info_rows', self.data.shape[0] + 1))
-        print('Shape:')
-        print(self.data.shape, '\n')
-        print('Info:')
-        print(self.data.info())
-        print('Shape:')
-        print(self.data.describe())
-        print('Head ... Tail:')
-        print(self.data.head())
-        print(self.data.tail())
-        print('Columns:')
-        print(self.data.columns)
-        print('Null count:')
-        print(self.data.isnull().sum())
-        return self
+    @property
+    def df(self):
+        """Get the actual version of modified df."""
+        return self._data.copy()
 
-    def apply_custom(self, fn, filtered: False):
+    @df.setter
+    def df(self, df):
+        """Set a new dataframe to be modified."""
+        self._data = df.copy()
+        
+    def apply_custom(self, fn, args={}):
         """Apply a custom function to the dataframe.
         
         Args:
@@ -55,7 +43,7 @@ class Prep(object):
             self
 
         """
-        self.data = fn(self.data)
+        self._data = fn(self._data, **args)
         return self
 
     def drop_nulls(self, cols: list = None):
@@ -69,10 +57,10 @@ class Prep(object):
 
         """
         if cols == None:
-            self.data.dropna(inplace=True)
+            self._data.dropna(inplace=True)
         else:
-            cols = [c for c in cols if c in self.data.columns]
-            self.data.dropna(subset=cols, inplace=True)
+            cols = [c for c in cols if c in self._data.columns]
+            self._data.dropna(subset=cols, inplace=True)
         return self
 
     def drop_not_nulls(self, cols: list):
@@ -85,9 +73,9 @@ class Prep(object):
             self
 
         """
-        cols = [c for c in cols if c in self.data.columns]
+        cols = [c for c in cols if c in self._data.columns]
         for col in cols:
-            self.data = self.data[self.data[col].isnull()]
+            self._data = self._data[self._data[col].isnull()]
         return self
 
     def drop_cols(self, cols: list):
@@ -100,9 +88,9 @@ class Prep(object):
             self
 
         """
-        cols = [c for c in cols if c in self.data.columns]
+        cols = [c for c in cols if c in self._data.columns]
         for col in cols:
-            self.data.drop(col, axis=1, inplace=True)
+            self._data.drop(col, axis=1, inplace=True)
         return self
 
     def bool_to_int(self, cols: list):
@@ -116,11 +104,11 @@ class Prep(object):
 
         """
         if cols == None:
-            self.data.applymap(lambda x: 1 if x else 0)
+            self._data.applymap(lambda x: 1 if x else 0)
         else:
-            cols = [c for c in cols if c in self.data.columns]
+            cols = [c for c in cols if c in self._data.columns]
             for col in cols:
-                self.data[col] = self.data[col].apply(lambda x: 1 if x else 0)
+                self._data[col] = self._data[col].apply(lambda x: 1 if x else 0)
         return self
 
     # TODO: Salvar label encoder em pickle
@@ -135,10 +123,10 @@ class Prep(object):
 
         """
         l_e = LabelEncoder()
-        cols = [c for c in cols if c in self.data.columns]
+        cols = [c for c in cols if c in self._data.columns]
         for col in cols:
-            self.data[col].fillna('N/A-ENC', inplace=True)
-            self.data[col] = l_e.fit_transform(self.data[col])
+            self._data[col].fillna('N/A-ENC', inplace=True)
+            self._data[col] = l_e.fit_transform(self._data[col])
         return self
 
     def fill_null_with(self, val, cols=None):
@@ -154,20 +142,20 @@ class Prep(object):
 
         """
         if cols == None:
-            self.data.fillna(val, inplace=True)
+            self._data.fillna(val, inplace=True)
         else:
-            cols = [c for c in cols if c in self.data.columns]
+            cols = [c for c in cols if c in self._data.columns]
             if isinstance(val, str):
                 if val == 'mean':
                     for col in cols:
-                        self.data[col].fillna((self.data[col].mean()),
+                        self._data[col].fillna((self._data[col].mean()),
                                             inplace=True)
                 else:
                     for col in cols:
-                        self.data[col].fillna(val, inplace=True)
+                        self._data[col].fillna(val, inplace=True)
             else:
                 for col in cols:
-                    self.data[col].fillna(val, inplace=True)
+                    self._data[col].fillna(val, inplace=True)
 
         return self
 
@@ -182,10 +170,10 @@ class Prep(object):
             pd.DataFrame
         """
         for col in columns:
-            dummy = pd.get_dummies(self.data[col], drop_first=drop_first)
-            self.data = pd.concat([self.data, dummy], axis=1)
+            dummy = pd.get_dummies(self._data[col], drop_first=drop_first)
+            self._data = pd.concat([self._data, dummy], axis=1)
 
-        self.data.drop(columns, axis=1, inplace=True)
+        self._data.drop(columns, axis=1, inplace=True)
         return self
 
     def col_2_time(self, columns: list):
@@ -198,7 +186,7 @@ class Prep(object):
             pd.DataFrame: Description
         """
         for column in columns:
-            self.data[column] = pd.to_datetime(self.data[column])
+            self._data[column] = pd.to_datetime(self._data[column])
         return self
 
     def time_2_float(self, columns: list):
@@ -211,7 +199,7 @@ class Prep(object):
             pd.DataFrame: Description
         """
         for column in columns:
-            self.data[column] = self.data[column].apply(
+            self._data[column] = self._data[column].apply(
                 lambda x: time.mktime(x.timetuple()))
         return self
 

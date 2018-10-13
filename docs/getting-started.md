@@ -36,6 +36,6 @@ prep_df = Prep(pd.read_csv('data.csv')) \
 
 # Now you have a modified df 
 # with all steps above
-df = prep_df.data
+df = prep_df.df
 df.to_csv('data_prep.csv')
 ```
