@@ -8,6 +8,8 @@ Welcome to ML Belt's documentation!
 
 The machine learning and data science utility belt.
 
+We recommend that you have Anaconda installed: https://anaconda.org/
+
 
 .. toctree::
    :maxdepth: 2

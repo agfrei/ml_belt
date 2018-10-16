@@ -12,3 +12,4 @@ pandas
 numpy
 recommonmark
 sphinx_rtd_theme
+sklearn

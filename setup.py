@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='ml_belt',
-    version='0.1.2',
+    version='0.1.3',
     description='The machine learning utility belt',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -18,5 +18,9 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+    ],
+    install_requires=[
+        'pandas',
+        'sklearn',
     ],
     zip_safe=False)

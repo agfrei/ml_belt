@@ -5,6 +5,8 @@ from sklearn.preprocessing import LabelEncoder
 
 
 # TODO: acertar docustrings
+# TODO: drop_by
+# TODO: apply_custom_item_level (escolher axis)
 class Prep(object):
     """Preprocessing / preparing data.
 
@@ -32,6 +34,7 @@ class Prep(object):
     def df(self, df):
         """Set a new dataframe to be modified."""
         self._data = df.copy()
+        return self
         
     def apply_custom(self, fn, args={}):
         """Apply a custom function to the dataframe.
