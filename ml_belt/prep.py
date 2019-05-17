@@ -1,12 +1,13 @@
 """Module for common preprocessing tasks."""
 import time
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
 
-# TODO: acertar docustrings
+# TODO: acertar docstrings
 # TODO: drop_by
 # TODO: apply_custom_item_level (escolher axis)
+# TODO: colocar um acompanhamento de progresso
 class Prep(object):
     """Preprocessing / preparing data.
 
@@ -24,6 +25,8 @@ class Prep(object):
 
         """
         self._data = df.copy()
+        self._le = {}
+        self._scaler = None
 
     @property
     def df(self):
@@ -81,6 +84,16 @@ class Prep(object):
             self._data = self._data[self._data[col].isnull()]
         return self
 
+    def drop_null_cols(self):
+        """Drop colls with all null values.
+        
+        Returns:
+            self
+            
+        """
+        self._data.dropna(index=1, how='all')
+        return self
+
     def drop_cols(self, cols: list):
         """Drop all listed columns.
 
@@ -125,11 +138,26 @@ class Prep(object):
             Self
 
         """
-        l_e = LabelEncoder()
         cols = [c for c in cols if c in self._data.columns]
         for col in cols:
             self._data[col].fillna('N/A-ENC', inplace=True)
-            self._data[col] = l_e.fit_transform(self._data[col])
+            self._le[col] = LabelEncoder()
+            self._data[col] = self._le[col].fit_transform(self._data[col])
+        return self
+
+    def inverse_encode(self, cols: list):
+        """Encode categorical vars into numeric ones.
+
+        Args:
+            - cols (list): list of columns to encode
+
+        Returns:
+            Self
+
+        """
+        cols = [c for c in cols if c in self._data.columns]
+        for col in cols:
+            self._data[col] = self._le[col].inverse_transform(self._data[col])
         return self
 
     def fill_null_with(self, val, cols=None):
@@ -179,31 +207,51 @@ class Prep(object):
         self._data.drop(columns, axis=1, inplace=True)
         return self
 
-    def col_2_time(self, columns: list):
+    def col_2_time(self, cols: list):
         """Summary
 
         Args:
-            columns (list): Description
+            cols (list): Description
 
         Returns:
             pd.DataFrame: Description
         """
-        for column in columns:
+        for column in cols:
             self._data[column] = pd.to_datetime(self._data[column])
         return self
 
-    def time_2_float(self, columns: list):
+    def time_2_float(self, cols: list):
         """Summary
 
         Args:
-            columns (list): Description
+            cols (list): Description
 
         Returns:
             pd.DataFrame: Description
         """
-        for column in columns:
+        for column in cols:
             self._data[column] = self._data[column].apply(
                 lambda x: time.mktime(x.timetuple()))
+        return self
+
+    def scale(self, cols: list = None):
+        self._scaler = MinMaxScaler()
+
+        if cols == None:
+            cols = self._data.columns
+        else:
+            cols = [c for c in cols if c in self._data.columns]
+
+        self._data[cols] = self._scaler.fit_transform(self._data[cols])
+        return self
+
+    def inverse_scale(self, cols: list = None):
+        if cols == None:
+            cols = self._data.columns
+        else:
+            cols = [c for c in cols if c in self._data.columns]
+
+        self._data[cols] = self._scaler.inverse_transform(self._data[cols])
         return self
 
 
